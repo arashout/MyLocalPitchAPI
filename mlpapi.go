@@ -45,7 +45,7 @@ const (
 	BaseURL     = "https://www.mylocalpitch.com"
 )
 
-func GetPitchSlots(pitch Pitch, client *http.Client, starts time.Time, ends time.Time) MLPData {
+func GetPitchSlots(pitch Pitch, client *http.Client, starts time.Time, ends time.Time) []Slot {
 	u, err := url.Parse(APIEndpoint + "/pitches/" + pitch.VenueID + "/slots")
 	if err != nil {
 		log.Fatal(err)
@@ -79,6 +79,21 @@ func GetPitchSlots(pitch Pitch, client *http.Client, starts time.Time, ends time
 
 	// Return the array of Slots
 	return mlpResponse.Data
+}
+
+func GetAvailableSlots(pitch Pitch, client *http.Client, starts time.Time, ends time.Time) []Slot {
+	slots := GetPitchSlots(pitch, client, starts, ends)
+	if len(slots) == 0 {
+		return slots
+	}
+
+	availableSlots := make([]Slot, 0)
+	for _, slot := range slots {
+		if slot.Attributes.Availabilities == 0 {
+			availableSlots = append(availableSlots, slot)
+		}
+	}
+	return availableSlots
 }
 
 func GetSlotCheckoutLink(slot Slot, pitch Pitch) string {
