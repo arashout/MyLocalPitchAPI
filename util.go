@@ -1,4 +1,4 @@
-package main
+package mlpapi
 
 import (
 	"encoding/json"
