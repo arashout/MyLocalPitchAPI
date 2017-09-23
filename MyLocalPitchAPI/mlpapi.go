@@ -1,4 +1,4 @@
-package MyLocalPitchAPI
+package mlpapi
 
 import (
 	"fmt"
