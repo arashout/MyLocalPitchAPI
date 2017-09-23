@@ -8,45 +8,23 @@ import (
 	"time"
 )
 
-type Pitch struct {
-	VenueID   string
-	VenuePath string
-	City      string
-}
-
-type MLPResponse struct {
-	Meta struct {
-		TotalItems int `json:"total_items"`
-		Filter     struct {
-			Starts string `json:"starts"`
-			Ends   string `json:"ends"`
-		} `json:"filter"`
-	} `json:"meta"`
-	Data MLPData `json:"data"`
-}
-
-type MLPData []Slot
-
-type Slot struct {
-	Type       string `json:"type"`
-	ID         string `json:"id"`
-	Attributes struct {
-		Starts         time.Time `json:"starts"`
-		Ends           time.Time `json:"ends"`
-		Price          string    `json:"price"`
-		AdminFee       string    `json:"admin_fee"`
-		Currency       string    `json:"currency"`
-		Availabilities int       `json:"availabilities"`
-	} `json:"attributes"`
-}
-
 const (
-	APIEndpoint = "https://api-v2.mylocalpitch.com"
-	BaseURL     = "https://www.mylocalpitch.com"
+	apiEndpoint = "https://api-v2.mylocalpitch.com"
+	baseURL     = "https://www.mylocalpitch.com"
 )
 
-func GetPitchSlots(pitch Pitch, client *http.Client, starts time.Time, ends time.Time) []Slot {
-	u, err := url.Parse(APIEndpoint + "/pitches/" + pitch.VenueID + "/slots")
+func New() *MLPClient {
+	return &MLPClient{
+		httpClient: &http.Client{},
+	}
+}
+
+func (mlpClient *MLPClient) Close() {
+	// Nothing here yet
+}
+
+func (mlpClient *MLPClient) GetPitchSlots(pitch Pitch, starts time.Time, ends time.Time) []Slot {
+	u, err := url.Parse(apiEndpoint + "/pitches/" + pitch.VenueID + "/slots")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -60,16 +38,16 @@ func GetPitchSlots(pitch Pitch, client *http.Client, starts time.Time, ends time
 
 	// Add request headers
 	req, err := http.NewRequest("GET", u.String(), nil)
-	req.Host = APIEndpoint
-	req.Header.Set("Origin", BaseURL)
+	req.Host = apiEndpoint
+	req.Header.Set("Origin", baseURL)
 	req.Header.Set("Accept-Encoding", "gzip, deflate, br")
 	req.Header.Set("Accept-Language", "en-US,en;q=0.8")
 	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.91 Safari/537.36")
 	req.Header.Set("Accept", "application/json, text/plain, */*")
-	req.Header.Set("Referer", BaseURL+"/"+pitch.City+"/venue/"+pitch.VenuePath)
+	req.Header.Set("Referer", baseURL+"/"+pitch.City+"/venue/"+pitch.VenuePath)
 	req.Header.Set("Connection", "keep-alive")
 
-	response, err := client.Get(u.String())
+	response, err := mlpClient.httpClient.Get(u.String())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,8 +59,8 @@ func GetPitchSlots(pitch Pitch, client *http.Client, starts time.Time, ends time
 	return mlpResponse.Data
 }
 
-func GetAvailableSlots(pitch Pitch, client *http.Client, starts time.Time, ends time.Time) []Slot {
-	slots := GetPitchSlots(pitch, client, starts, ends)
+func (mlpClient *MLPClient) GetAvailableSlots(pitch Pitch, starts time.Time, ends time.Time) []Slot {
+	slots := mlpClient.GetPitchSlots(pitch, starts, ends)
 	if len(slots) == 0 {
 		return slots
 	}
@@ -96,6 +74,6 @@ func GetAvailableSlots(pitch Pitch, client *http.Client, starts time.Time, ends 
 	return availableSlots
 }
 
-func GetSlotCheckoutLink(slot Slot, pitch Pitch) string {
-	return fmt.Sprintf("%s/%s/venue/%s/checkout/%s", BaseURL, pitch.City, pitch.VenuePath, slot.ID)
+func (mlpClient *MLPClient) GetSlotCheckoutLink(slot Slot, pitch Pitch) string {
+	return fmt.Sprintf("%s/%s/venue/%s/checkout/%s", baseURL, pitch.City, pitch.VenuePath, slot.ID)
 }
