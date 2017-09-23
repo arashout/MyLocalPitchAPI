@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -24,7 +25,9 @@ type MLPResponse struct {
 	Data MLPData `json:"data"`
 }
 
-type MLPData []struct {
+type MLPData []Slot
+
+type Slot struct {
 	Type       string `json:"type"`
 	ID         string `json:"id"`
 	Attributes struct {
@@ -74,5 +77,10 @@ func GetPitchSlots(pitch Pitch, client *http.Client, starts time.Time, ends time
 	mlpResponse := MLPResponse{}
 	GetJSON(response, &mlpResponse)
 
+	// Return the array of Slots
 	return mlpResponse.Data
+}
+
+func GetSlotCheckoutLink(slot Slot, pitch Pitch) string {
+	return fmt.Sprintf("%s/%s/venue/%s/checkout/%s", BaseURL, pitch.City, pitch.VenuePath, slot.ID)
 }

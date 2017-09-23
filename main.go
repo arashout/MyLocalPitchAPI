@@ -18,5 +18,6 @@ func main() {
 	for _, slot := range slots {
 		fmt.Println(slot)
 	}
+	fmt.Println(GetSlotCheckoutLink(slots[0], p))
 
 }
