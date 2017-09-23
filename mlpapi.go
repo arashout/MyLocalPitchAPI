@@ -67,7 +67,7 @@ func (mlpClient *MLPClient) GetAvailableSlots(pitch Pitch, starts time.Time, end
 
 	availableSlots := make([]Slot, 0)
 	for _, slot := range slots {
-		if slot.Attributes.Availabilities == 0 {
+		if slot.Attributes.Availabilities != 0 {
 			availableSlots = append(availableSlots, slot)
 		}
 	}
