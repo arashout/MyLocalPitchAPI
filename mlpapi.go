@@ -73,7 +73,7 @@ func (mlpClient *MLPClient) FilterSlotsByRules(slots []Slot, rules []func(Slot) 
 	return filteredSlots
 }
 
-func (mlpClient *MLPClient) GetSlotCheckoutLink(slot Slot, pitch Pitch) string {
+func GetSlotCheckoutLink(slot Slot, pitch Pitch) string {
 	return fmt.Sprintf("%s/%s/venue/%s/checkout/%s", baseURL, pitch.City, pitch.VenuePath, slot.ID)
 }
 
