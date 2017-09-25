@@ -13,6 +13,7 @@ type Pitch struct {
 	ID   string
 	Path string
 	City string
+	Name string
 }
 
 type MLPResponse struct {
