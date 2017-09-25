@@ -24,7 +24,7 @@ func (mlpClient *MLPClient) Close() {
 }
 
 func (mlpClient *MLPClient) GetPitchSlots(pitch Pitch, starts time.Time, ends time.Time) []Slot {
-	u, err := url.Parse(apiEndpoint + "/pitches/" + pitch.VenueID + "/slots")
+	u, err := url.Parse(apiEndpoint + "/pitches/" + pitch.ID + "/slots")
 	if err != nil {
 		log.Fatal(err)
 	}

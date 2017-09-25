@@ -10,7 +10,7 @@ type MLPClient struct {
 }
 
 type Pitch struct {
-	VenueID   string
+	ID        string
 	VenuePath string
 	City      string
 }
