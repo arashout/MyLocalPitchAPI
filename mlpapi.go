@@ -44,7 +44,7 @@ func (mlpClient *MLPClient) GetPitchSlots(pitch Pitch, starts time.Time, ends ti
 	req.Header.Set("Accept-Language", "en-US,en;q=0.8")
 	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.91 Safari/537.36")
 	req.Header.Set("Accept", "application/json, text/plain, */*")
-	req.Header.Set("Referer", baseURL+"/"+pitch.City+"/venue/"+pitch.VenuePath)
+	req.Header.Set("Referer", baseURL+"/"+pitch.City+"/venue/"+pitch.Path)
 	req.Header.Set("Connection", "keep-alive")
 
 	response, err := mlpClient.httpClient.Get(u.String())
@@ -74,7 +74,7 @@ func (mlpClient *MLPClient) FilterSlotsByRules(slots []Slot, rules []func(Slot) 
 }
 
 func GetSlotCheckoutLink(slot Slot, pitch Pitch) string {
-	return fmt.Sprintf("%s/%s/venue/%s/checkout/%s", baseURL, pitch.City, pitch.VenuePath, slot.ID)
+	return fmt.Sprintf("%s/%s/venue/%s/checkout/%s", baseURL, pitch.City, pitch.Path, slot.ID)
 }
 
 func checkAllRulesForSlot(rules []func(Slot) bool, slot Slot) bool {
