@@ -59,7 +59,7 @@ func (mlpClient *MLPClient) GetPitchSlots(pitch Pitch, starts time.Time, ends ti
 	return mlpResponse.Data
 }
 
-func (mlpClient *MLPClient) FilterSlotsByRules(slots []Slot, rules []SlotFilter) []Slot {
+func (mlpClient *MLPClient) FilterSlotsByRules(slots []Slot, rules []Rule) []Slot {
 	if len(rules) == 0 {
 		return slots
 	}
@@ -78,7 +78,7 @@ func GetSlotCheckoutLink(pitch Pitch, slot Slot) string {
 	return fmt.Sprintf("%s/%s/venue/%s/checkout/%s", baseURL, pitch.City, pitch.Path, slot.ID)
 }
 
-func checkAllRulesForSlot(rules []SlotFilter, slot Slot) bool {
+func checkAllRulesForSlot(rules []Rule, slot Slot) bool {
 	for _, rule := range rules {
 		if !rule(slot) {
 			return false

@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type SlotFilter func(Slot) bool
+type Rule func(Slot) bool
 
 type MLPClient struct {
 	httpClient *http.Client
