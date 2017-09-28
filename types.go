@@ -6,8 +6,8 @@ import (
 )
 
 type Rule struct {
-	Name       string
-	FilterFunc func(Slot) bool
+	Description  string
+	DoesSlotPass func(Slot) bool
 }
 
 type MLPClient struct {
